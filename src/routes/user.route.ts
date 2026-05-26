@@ -8,8 +8,8 @@ userRouter.get('/:id', UserController.findById);
 
 userRouter.post('/', UserController.createUser);
 
-userRouter.put('/', UserController.updateUser);
+userRouter.put('/:id', UserController.updateUser);
 
-userRouter.delete('/', UserController.deleteUser);
+userRouter.delete('/:id', UserController.deleteUser);
 
 export default userRouter;

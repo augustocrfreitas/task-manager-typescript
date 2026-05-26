@@ -37,8 +37,10 @@ export default class UserController {
   }
 
   static async updateUser(req: Request, res: Response): Promise<void> {
-    const user = req.body;
-    const { id, ...dados } = user;
+    const dados = req.body;
+    const { id } = req.params;
+
+    if (typeof id !== 'string') return;
 
     try {
       const newUser = await UserService.updateUser(id, dados);
