@@ -1,67 +1,52 @@
-import UserService from '../services/user.service.js';
 import { Request, Response } from 'express';
+import { UserService } from '../services/user.service.js';
+import { CreateUserInput, PublicUser } from '../models/user.model.js';
 
-export default class UserController {
+export class UserController {
   static async findAllUsers(req: Request, res: Response): Promise<void> {
     try {
-      const users = await UserService.findAll();
+      const users = await UserService.findAllUsers();
       res.status(200).json(users);
     } catch (error) {
       const err = error as Error;
-      res.status(400).json({ message: err.message });
+      res.status(400).json({ erro: err.message });
     }
   }
-
-  static async findById(req: Request, res: Response): Promise<void> {
+  static async findUserById(req: Request, res: Response): Promise<void> {
     const { id } = req.params as { id: string };
-
     try {
-      const user = await UserService.findById(id);
+      const user = await UserService.findUserById(id);
       res.status(200).json(user);
     } catch (error) {
       const err = error as Error;
-      res.status(400).json({ message: err.message });
+      res.status(400).json({ erro: err.message });
     }
   }
 
   static async createUser(req: Request, res: Response): Promise<void> {
-    const dados = req.body;
+    const user = req.body;
 
     try {
-      const newUser = await UserService.createUser(dados);
-      res.status(200).json(newUser);
+      const result = await UserService.createUser(user);
+      res.status(200).json(result);
     } catch (error) {
       const err = error as Error;
-      res.status(400).json({ message: err.message });
+      res.status(400).json({ erro: err.message });
     }
   }
 
-  static async updateUser(req: Request, res: Response): Promise<void> {
-    const dados = req.body;
-    const { id } = req.params;
-
-    if (typeof id !== 'string') return;
+  static async login(req: Request, res: Response): Promise<void> {
+    const { email, password } = req.body;
 
     try {
-      const newUser = await UserService.updateUser(id, dados);
-      res.status(200).json(newUser);
+      const result = await UserService.login(email, password);
+      res.status(200).json({
+        message: 'Usuario logado com sucesso!',
+        token: result,
+      });
     } catch (error) {
       const err = error as Error;
-      res.status(400).json({ message: err.message });
-    }
-  }
-
-  static async deleteUser(req: Request, res: Response): Promise<void> {
-    const { id } = req.params as { id: string };
-
-    if (typeof id === 'string') {
-      try {
-        const user = await UserService.deleteUser(id);
-        res.status(200).json(user);
-      } catch (error) {
-        const err = error as Error;
-        res.status(400).json({ message: err.message });
-      }
+      res.status(400).json({ erro: err.message });
     }
   }
 }

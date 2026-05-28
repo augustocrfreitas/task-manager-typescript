@@ -1,51 +1,64 @@
-import UserRepository from '../repositories/user.repository';
-import {
-  CreateUserInput,
-  User,
-  PublicUser,
-  UpdatedUserInput,
-} from '../models/user.model.js';
+import { CreateUserInput, PublicUser, User } from '../models/user.model';
+import { UserRepository } from '../repositories/user.repository';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 
-export default class UserService {
-  static async findAll() {
-    return UserRepository.findAllUsers();
+export class UserService {
+  static async findAllUsers(): Promise<PublicUser[]> {
+    const result = await UserRepository.findAllUsers();
+
+    let usersPublicList: PublicUser[] = [];
+
+    const usersList = result.map((item) => {
+      const { password, ...publicResult } = item;
+      usersPublicList.push(publicResult);
+    });
+
+    return usersPublicList;
   }
 
-  static async findById(id: string): Promise<PublicUser> {
-    const user = await UserRepository.findUserById(id);
+  static async findUserById(id: string): Promise<PublicUser> {
+    const result = await UserRepository.getUserById(id);
+
+    if (!result) {
+      throw new Error('Usuário não existe');
+    }
+
+    const { password, ...publicResult } = result;
+    return publicResult;
+  }
+
+  static async createUser(user: CreateUserInput): Promise<PublicUser> {
+    const { name, email, password } = user;
+    const hashPassword = await bcrypt.hash(password, 10);
+    const hashUser = { name, email, password: hashPassword };
+
+    const result = await UserRepository.createUser(hashUser);
+
+    const { password: _, ...publicResult } = result;
+    return publicResult;
+  }
+
+  static async login(email: string, password: string) {
+    const user = await UserRepository.getUserByEmail(email);
 
     if (!user) {
-      throw new Error('Usuário não existe!');
+      throw new Error('Email ou senha inválidos');
     }
 
-    const { password: _, ...publicUser } = user;
-    return publicUser;
-  }
+    const isCorrectPasword = await bcrypt.compare(password, user.password);
 
-  static async createUser(dados: CreateUserInput): Promise<PublicUser> {
-    const { email } = dados;
-    const isUser = await UserRepository.findUserByEmail(email);
-
-    if (isUser) {
-      throw new Error('Usuario já existe');
+    if (!isCorrectPasword) {
+      throw new Error('Email ou senha inválidos');
     }
-
-    const user = await UserRepository.createUser(dados);
-
-    const { password: _, ...publicUser } = user;
-    return publicUser;
-  }
-
-  static async updateUser(
-    id: string,
-    dados: UpdatedUserInput,
-  ): Promise<PublicUser> {
-    const newUser = await UserRepository.updateUser(id, dados);
-    return newUser;
-  }
-
-  static async deleteUser(id: string): Promise<PublicUser> {
-    const user = await UserRepository.deleteUser(id);
-    return user;
+    const token = jwt.sign(
+      { id: user.id, name: user.name, email: user.email },
+      process.env.SECRET_KEY as string,
+      {
+        expiresIn: '8h',
+      },
+    );
+    return token;
   }
 }

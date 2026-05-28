@@ -1,8 +1,9 @@
 import express from 'express';
 import 'dotenv/config';
-import userRouter from './routes/user.route';
+import { userRouter } from './routes/user.route';
 
 const app = express();
+app.use(express.json());
 const port = process.env.PORT || 3333;
 
 app.use('/users', userRouter);
