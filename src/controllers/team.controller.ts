@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { TeamService } from '../services/team.service.js';
-import { CreateTeamInput } from '../models/team.model.js';
 
 export class TeamController {
     static async getAllTeams(req: Request, res: Response): Promise<void> {

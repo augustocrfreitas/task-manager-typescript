@@ -10,10 +10,5 @@ export interface Task {
     assigneeTo?: string;
 }
 
-export type CreateTaskInput = Omit<
-    Task,
-    'completed' | 'createdAt' | 'updatedAt'
->;
-export type UpdateTaskInput = Partial<
-    Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>
->;
+export type CreateTaskInput = Omit<Task, 'completed' | 'createdAt' | 'updatedAt'>;
+export type UpdateTaskInput = Partial<Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>>;

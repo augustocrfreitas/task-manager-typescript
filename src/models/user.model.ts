@@ -8,8 +8,6 @@ export interface User {
 }
 
 export type CreateUserInput = Omit<User, 'id' | 'createdAt' | 'updatedAt'>;
-export type UpdatedUserInput = Partial<
-    Omit<User, 'id' | 'createdAt' | 'updatedAt'>
->;
+export type UpdatedUserInput = Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>;
 
 export type PublicUser = Omit<CreateUserInput, 'password'>;

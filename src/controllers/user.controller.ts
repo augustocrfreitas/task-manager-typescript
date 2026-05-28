@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/user.service.js';
-import { CreateUserInput, PublicUser } from '../models/user.model.js';
 
 export class UserController {
     static async findAllUsers(req: Request, res: Response): Promise<void> {
