@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import express, { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export const authMiddleware = (
   req: Request,
@@ -15,12 +15,12 @@ export const authMiddleware = (
   }
 
   const token = authHeader.split(' ')[1];
-  const isValidJwt = jwt.verify(token, process.env.SECRET_KEY as string);
 
-  if (!isValidJwt) {
+  try {
+    const isValidJwt = jwt.verify(token, process.env.SECRET_KEY as string);
+    next();
+  } catch (error) {
+    const err = error as Error;
     res.status(401).json({ error: 'Token inválido ou expirado' });
-    return;
   }
-
-  next();
 };

@@ -1,5 +1,5 @@
 import pool from '../config/database.js';
-import { CreateUserInput, User, PublicUser } from '../models/user.model.js';
+import { CreateUserInput, User } from '../models/user.model.js';
 
 export class UserRepository {
   static async findAllUsers() {
