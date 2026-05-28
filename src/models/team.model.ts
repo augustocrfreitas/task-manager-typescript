@@ -1,8 +1,8 @@
 export interface Team {
-    id: string
-    name: string
-    createdAt: string
-    updatedAt: string
+    id: string;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
-export type CreateTeamInput = Omit<Team, 'id' | 'createdAt' | 'updatedAt'>
+export type CreateTeamInput = Omit<Team, 'id' | 'createdAt' | 'updatedAt'>;
