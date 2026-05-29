@@ -4,6 +4,7 @@ import { CreateTaskInput, Task } from '../models/task.model';
 export default class TaskRepository {
     static async getTasks(userId: string): Promise<Task[]> {
         const result = await pool.query(
+            /*sql*/
             `
             SELECT 
             t.id,
@@ -28,6 +29,7 @@ export default class TaskRepository {
 
     static async getTaskById(id: string): Promise<Task> {
         const result = await pool.query(
+            /*sql*/
             `
             SELECT 
             t.id,
@@ -53,6 +55,7 @@ export default class TaskRepository {
     static async createTask(data: CreateTaskInput): Promise<Task> {
         console.log(data);
         const result = await pool.query(
+            /*sql*/
             `
            WITH inserted_task AS (
                 INSERT INTO "Task" (title, description, "teamId", "assigneeTo", "createdBy")

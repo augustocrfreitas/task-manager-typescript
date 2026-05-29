@@ -1,7 +1,14 @@
-import jwt from 'jsonwebtoken';
-import { NextFunction, Request, Response } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { NextFunction, Response } from 'express';
+import { AuthRequest } from '../@types/express';
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+type TokenPayload = {
+    id: string;
+    name: string;
+    email: string;
+} & JwtPayload;
+
+export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -13,7 +20,8 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     const token = authHeader.split(' ')[1];
 
     try {
-        const isValidJwt = jwt.verify(token, process.env.SECRET_KEY as string);
+        const decoded = jwt.verify(token, process.env.SECRET_KEY as string) as TokenPayload;
+        req.user = decoded;
         next();
     } catch (error) {
         const err = error as Error;

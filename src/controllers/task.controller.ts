@@ -1,9 +1,16 @@
 import { Request, Response } from 'express';
 import TaskService from '../services/task.service';
+import { AuthRequest } from '../@types/express';
 
 export default class TaskController {
-    static async getTasks(req: Request, res: Response): Promise<void> {
-        const { userId } = req.params as { userId: string };
+    static async getTasks(req: AuthRequest, res: Response): Promise<void> {
+        if (!req.user) {
+            res.status(401).json({ erro: 'Não autorizado' });
+            return;
+        }
+
+        const userId = req.user.id;
+
         try {
             const result = await TaskService.getTasks(userId);
             res.status(200).json(result);
