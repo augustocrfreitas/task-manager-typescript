@@ -6,8 +6,8 @@ export class UserRepository {
         const result = await pool.query(
             /*sql*/
             `
-      SELECT * FROM "User"
-      `,
+        SELECT * FROM "User"
+        `,
         );
         return result.rows;
     }
@@ -16,8 +16,8 @@ export class UserRepository {
         const result = await pool.query(
             /*sql*/
             `
-      SELECT * FROM "User" WHERE id = $1
-      `,
+            SELECT * FROM "User" WHERE id = $1
+            `,
             [id],
         );
         return result.rows[0];
@@ -39,10 +39,10 @@ export class UserRepository {
         const result = await pool.query(
             /*sql*/
             `
-      INSERT INTO "User" (name, email, password)
-      VALUES ($1, $2, $3)
-      RETURNING *
-      `,
+            INSERT INTO "User" (name, email, password)
+            VALUES ($1, $2, $3)
+            RETURNING *
+            `,
             [user.name, user.email, user.password],
         );
         console.log(result.rows[0]);
